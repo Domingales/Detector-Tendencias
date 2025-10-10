@@ -1,0 +1,588 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cripto TA — Detección de cambios de tendencia (Datos reales)</title>
+  <style>
+    :root{
+      --bg:#0a0e27;         /* fondo oscuro */
+      --panel:#0f153a;      /* paneles */
+      --panel-2:#111a47;
+      --txt:#dae4ff;        /* texto principal */
+      --muted:#93a2d8;      /* texto secundario */
+      --bull:#00ff88;       /* alcista */
+      --bear:#ff3b69;       /* bajista */
+      --warn:#ffd369;       /* aviso */
+      --card-grad: linear-gradient(160deg, rgba(255,255,255,0.04), rgba(255,255,255,0));
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --round: 16px;
+      --shadow: 0 6px 24px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.04);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0; background:radial-gradient(1000px 600px at 20% -10%, #152058 0%, transparent 60%), var(--bg); color:var(--txt); font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";}
+
+    /* Topbar */
+    .topbar{position:sticky; top:0; z-index:50; display:flex; gap:12px; align-items:center; padding:14px 16px; background:linear-gradient(180deg, rgba(10,14,39,.95) 0%, rgba(10,14,39,.75) 65%, rgba(10,14,39,0) 100%); backdrop-filter: blur(8px); border-bottom:1px solid rgba(255,255,255,.06)}
+    .brand{font-weight:800; letter-spacing:.4px}
+    .brand b{color:var(--bull)}
+    .tag{font-size:12px; padding:4px 8px; border:1px solid rgba(255,255,255,.08); border-radius:999px; color:var(--muted)}
+    .search{flex:1; display:flex; align-items:center; gap:10px; background:var(--panel); border:1px solid rgba(255,255,255,.06); border-radius:999px; padding:8px 12px; box-shadow:var(--shadow)}
+    /* 👇 Nuevo: estilo del select dentro de la barra de búsqueda */
+    .search select{flex:1; background:transparent; border:0; outline:0; color:var(--txt); font-size:14px; appearance:none}
+    .btn{appearance:none; border:1px solid rgba(255,255,255,.08); background:var(--panel-2); color:var(--txt); padding:10px 14px; border-radius:12px; cursor:pointer; transition: transform .06s ease, background .2s ease; box-shadow:var(--shadow); font-weight:600}
+    .btn:hover{transform: translateY(-1px)}
+    .btn.on{outline:2px solid var(--bull)}
+
+    /* Layout */
+    .container{padding:16px; max-width:1200px; margin:0 auto}
+    .grid{display:grid; grid-template-columns: 320px 1fr; gap:16px}
+    @media (max-width: 980px){ .grid{grid-template-columns: 1fr} }
+
+    /* Cards */
+    .card{background: var(--panel); border:1px solid rgba(255,255,255,.06); border-radius:var(--round); box-shadow:var(--shadow); overflow:hidden; position:relative}
+    .cardHeader{display:flex; align-items:center; justify-content:space-between; padding:12px 14px; background:var(--card-grad); border-bottom:1px solid rgba(255,255,255,.06)}
+    .cardTitle{font-weight:700}
+    .cardBody{padding:12px 14px}
+
+    /* List */
+    .list{display:flex; flex-direction:column; gap:10px; max-height: calc(100vh - 180px); overflow:auto; padding:12px}
+    .row{display:grid; grid-template-columns: 28px 1fr auto; align-items:center; gap:10px; padding:10px; border-radius:12px; background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0)); border:1px solid rgba(255,255,255,.06)}
+    .row:hover{outline:1px solid rgba(255,255,255,.08)}
+    .sym{font-weight:800; color:#cfe6ff}
+    .name{color:var(--muted); font-size:12px}
+    .sig{font-family:var(--mono); font-weight:700}
+    .sig.buy{color:var(--bull)}
+    .sig.sell{color:var(--bear)}
+    .chip{font-size:11px; padding:2px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.08); color:var(--muted)}
+
+    /* Detail pane */
+    .detail{display:grid; grid-template-rows:auto auto 1fr; gap:12px}
+    .kpis{display:grid; grid-template-columns: repeat(4, 1fr); gap:10px}
+    @media (max-width: 640px){ .kpis{grid-template-columns: repeat(2, 1fr)} }
+    .kpi{background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,0)); border:1px solid rgba(255,255,255,.06); padding:12px; border-radius:12px}
+    .kpi .lbl{color:var(--muted); font-size:12px}
+    .kpi .val{font-family:var(--mono); font-size:20px}
+
+    /* Charts */
+    .chartWrap{height:380px; position:relative}
+    canvas{display:block; width:100%; height:100%}
+
+    /* Sub-panels */
+    .subgrid{display:grid; grid-template-columns: 1fr 1fr; gap:12px}
+    @media (max-width: 840px){ .subgrid{grid-template-columns: 1fr} }
+    .alert{padding:10px 12px; border-radius:12px; border:1px dashed rgba(255,255,255,.12); background: linear-gradient(90deg, rgba(0,255,136,.08), rgba(255,59,105,.08)); display:flex; align-items:center; gap:10px}
+    .alert b{letter-spacing:.3px}
+
+    /* Badges */
+    .badge{padding:6px 10px; border-radius:999px; font-size:12px; border:1px solid rgba(255,255,255,.1)}
+    .badge.buy{background:rgba(0,255,136,.08); color:var(--bull)}
+    .badge.sell{background:rgba(255,59,105,.08); color:var(--bear)}
+    .badge.neutral{background:rgba(255,255,255,.06); color:#d5dcff}
+
+    .toast{position:fixed; right:16px; bottom:16px; background:var(--panel-2); border:1px solid rgba(255,255,255,.12); padding:12px 14px; border-radius:12px; box-shadow:var(--shadow); display:none; max-width:360px}
+
+    .muted{color:var(--muted)}
+    .small{font-size:12px}
+    .mono{font-family:var(--mono)}
+    .fade{opacity:.9}
+    .sep{height:1px; background:rgba(255,255,255,.06); margin:8px 0}
+
+    /* Simple animations */
+    .pulse{animation:pulse 2.4s ease-in-out infinite}
+    @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(0,255,136,.25)}70%{box-shadow:0 0 0 14px rgba(0,255,136,0)}100%{box-shadow:0 0 0 0 rgba(0,255,136,0)}}
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand">Cripto<b>TA</b> <span class="tag">v0.2 · Datos reales (Binance)</span></div>
+    <div class="search">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21 21l-4.3-4.3" stroke="#9fb3ff" stroke-width="2" stroke-linecap="round"/><circle cx="11" cy="11" r="7" stroke="#9fb3ff" stroke-width="2" fill="none"/></svg>
+      <!-- 🔽 Sustitución: input → select con scroll de 20 criptos -->
+      <select id="q" title="Selecciona cripto">
+        <option value="">Todas (20)</option>
+        <option value="BTC">BTC — Bitcoin</option>
+        <option value="ETH">ETH — Ethereum</option>
+        <option value="BNB">BNB — BNB</option>
+        <option value="SOL">SOL — Solana</option>
+        <option value="ADA">ADA — Cardano</option>
+        <option value="XRP">XRP — XRP</option>
+        <option value="DOGE">DOGE — Dogecoin</option>
+        <option value="AVAX">AVAX — Avalanche</option>
+        <option value="TRX">TRX — TRON</option>
+        <option value="LINK">LINK — Chainlink</option>
+        <option value="DOT">DOT — Polkadot</option>
+        <option value="MATIC">MATIC — Polygon</option>
+        <option value="LTC">LTC — Litecoin</option>
+        <option value="BCH">BCH — Bitcoin Cash</option>
+        <option value="UNI">UNI — Uniswap</option>
+        <option value="ATOM">ATOM — Cosmos</option>
+        <option value="ETC">ETC — Ethereum Classic</option>
+        <option value="NEAR">NEAR — NEAR</option>
+        <option value="APT">APT — Aptos</option>
+        <option value="FIL">FIL — Filecoin</option>
+      </select>
+    </div>
+    <select id="tf" class="btn" title="Marco temporal">
+      <option value="15m">15m</option>
+      <option value="1h" selected>1h</option>
+      <option value="4h">4h</option>
+      <option value="1d">1d</option>
+    </select>
+    <button id="refresh" class="btn">Actualizar</button>
+    <button id="alarmBtn" class="btn" title="Alarma de oportunidades">Alarma: OFF</button>
+  </div>
+
+  <div class="container">
+    <div class="grid">
+
+      <!-- Sidebar: watchlist / dashboard -->
+      <div class="card">
+        <div class="cardHeader">
+          <div class="cardTitle">Monitoreo</div>
+          <div>
+            <select id="filter" class="btn small">
+              <option value="all">Todas</option>
+              <option value="buy">Señal: Compra</option>
+              <option value="sell">Señal: Venta</option>
+            </select>
+          </div>
+        </div>
+        <div id="list" class="list"></div>
+      </div>
+
+      <!-- Detail -->
+      <div class="detail">
+        <div class="card">
+          <div class="cardHeader">
+            <div class="cardTitle" id="title">-</div>
+            <div class="small muted">Auto-refresh 60s · tiempo real</div>
+          </div>
+          <div class="cardBody">
+            <div class="alert" id="bigAlert" style="display:none"></div>
+            <div class="kpis" id="kpis"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="cardHeader"><div class="cardTitle">Gráfico</div><div class="small muted" id="lastUpdate">-</div></div>
+          <div class="cardBody chartWrap">
+            <canvas id="chart"></canvas>
+          </div>
+        </div>
+
+        <div class="subgrid">
+          <div class="card">
+            <div class="cardHeader"><div class="cardTitle">RSI (14)</div></div>
+            <div class="cardBody"><canvas id="rsiChart" height="140"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="cardHeader"><div class="cardTitle">MACD</div></div>
+            <div class="cardBody"><canvas id="macdChart" height="140"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <!-- Beep embebido para la alarma (lo dejo intacto, aunque ya no se usa) -->
+  <audio id="beep" preload="auto" src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABYAZGF0YQAAAAAAAAB/////AP///wD///8A////AP7//wD9//8A/f//AP3//wD+//8A////AP///wD///8A"/>
+
+  <script>
+  /* ======= NUEVO: función de sirena (único añadido) ======= */
+  function playSirena(){
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = "sine";
+    gain.gain.setValueAtTime(0.25, ctx.currentTime);
+
+    osc.connect(gain).connect(ctx.destination);
+
+    // Oscilación suave entre 400 y 700 Hz durante 10 segundos
+    const duration = 10;
+    const step = 0.5; // segundos
+    for(let t=0; t<duration; t+=step){
+      const freq = (t % 1 === 0) ? 400 : 700;
+      osc.frequency.linearRampToValueAtTime(freq, ctx.currentTime + t);
+    }
+
+    osc.start();
+    osc.stop(ctx.currentTime + duration);
+  }
+  /* ======================================================== */
+
+  /**********************
+   * UTILIDADES BÁSICAS *
+   **********************/
+  const rand = (a,b)=> a + Math.random()*(b-a);
+  const ema = (values, period)=>{
+    const k = 2/(period+1); const out=[]; let prev;
+    for(let i=0;i<values.length;i++){
+      const v=values[i]; prev = i? (v*k + prev*(1-k)) : v; out.push(prev);
+    } return out;
+  };
+  const rsi = (closes, period=14)=>{
+    if(closes.length<period+2) return Array(closes.length).fill(null);
+    let gains=0, losses=0; const rsis = Array(closes.length).fill(null);
+    for(let i=1;i<=period;i++){ const diff=closes[i]-closes[i-1]; if(diff>=0) gains+=diff; else losses-=diff; }
+    let avgGain=gains/period, avgLoss=losses/period; rsis[period]= avgLoss===0? 100 : 100 - (100/(1+avgGain/avgLoss));
+    for(let i=period+1;i<closes.length;i++){
+      const diff=closes[i]-closes[i-1]; const gain=Math.max(diff,0), loss=Math.max(-diff,0);
+      avgGain = (avgGain*(period-1)+gain)/period; avgLoss = (avgLoss*(period-1)+loss)/period;
+      rsis[i] = avgLoss===0? 100 : 100 - (100/(1+avgGain/avgLoss));
+    }
+    return rsis;
+  };
+  const macd = (closes, fast=12, slow=26, signalP=9)=>{
+    const emaFast=ema(closes, fast), emaSlow=ema(closes, slow);
+    const macdLine = emaFast.map((v,i)=> v - emaSlow[i]);
+    const signal = ema(macdLine.map(v=>v??0), signalP);
+    const hist = macdLine.map((v,i)=> v - signal[i]);
+    return {macdLine, signal, hist};
+  };
+  const atr = (highs, lows, closes, period=14)=>{
+    if(highs.length===0) return [];
+    const tr=[]; for(let i=0;i<highs.length;i++){
+      if(i===0){ tr.push(highs[i]-lows[i]); continue; }
+      tr.push(Math.max(
+        highs[i]-lows[i],
+        Math.abs(highs[i]-closes[i-1]),
+        Math.abs(lows[i]-closes[i-1])
+      ));
+    }
+    return ema(tr, period);
+  };
+
+  function detectPatterns(candles){
+    const res=[]; const n=candles.length; if(!n) return res;
+    const last = (k)=> candles[n-k];
+    const body = (c)=> Math.abs(c.c-c.o);
+    const range = (c)=> c.h-c.l;
+    const isBull = (c)=> c.c>c.o; const isBear=(c)=> c.o>c.c;
+
+    const c1 = last(1); if(c1){
+      const br=range(c1), bb=body(c1);
+      const lower=c1.o<c1.c? (c1.o - c1.l):(c1.c - c1.l);
+      const upper=c1.h - (c1.o<c1.c? c1.c : c1.o);
+      if(lower>2*bb && upper<bb) res.push({key:'Hammer', dir:'bull'});
+      if(upper>2*bb && lower<bb) res.push({key:'Inverted Hammer', dir:'bull'});
+    }
+    const a=last(2), b=last(1); if(a&&b){
+      if(isBear(a)&&isBull(b)&& b.c>a.o && b.o<a.c) res.push({key:'Bullish Engulfing', dir:'bull'});
+      if(isBull(a)&&isBear(b)&& b.o>a.c && b.c<a.o) res.push({key:'Bearish Engulfing', dir:'bear'});
+    }
+    if(c1){
+      const br=range(c1), bb=body(c1);
+      const upper=c1.h - Math.max(c1.o,c1.c); const lower=Math.min(c1.o,c1.c) - c1.l;
+      if(upper>2*bb && lower<bb) res.push({key:'Shooting Star', dir:'bear'});
+      if(bb<br*0.1) res.push({key:'Doji', dir:'neutral'});
+    }
+    return res;
+  }
+
+  function scoreSignal({closes, rsiArr, macdObj, ema12, ema26, vol, patterns}){
+    let score=0; const reasons=[];
+    const r=rsiArr.at(-1)||0; if(r<30){score+=15; reasons.push('RSI sobreventa');} else if(r>70){score-=15; reasons.push('RSI sobrecompra');}
+    const e12=ema12.at(-1), e26=ema26.at(-1); if(e12>e26){score+=20; reasons.push('EMA12>EMA26');} else {score-=20; reasons.push('EMA12<EMA26');}
+    const m=macdObj.macdLine.at(-1)||0, s=macdObj.signal.at(-1)||0; if(m>s){score+=18; reasons.push('MACD>Signal');} else {score-=18; reasons.push('MACD<Signal');}
+    const vNow=vol.at(-1)||0, vAvg = vol.slice(-20).reduce((a,b)=>a+b,0)/Math.max(1,Math.min(20,vol.length)); if(vNow>vAvg*1.5){score+=12; reasons.push('Volumen anómalo');}
+    const p=patterns.at(-1); if(p){ if(p.dir==='bull') {score+=15; reasons.push('Patrón '+p.key);} else if(p.dir==='bear'){score-=15; reasons.push('Patrón '+p.key);} }
+
+    const type = score>=40? 'Strong Buy' : score>=10? 'Buy' : score<=-40? 'Strong Sell' : score<=-10? 'Sell' : 'Neutral';
+    const dir = score>=10? 'buy' : score<=-10? 'sell' : 'neutral';
+    const confidence = Math.min(99, Math.max(0, Math.round(Math.abs(score)*1.4)));
+    const trendFlip = ( ()=>{
+      const len=closes.length; if(len<3) return false;
+      const e12prev=ema12[len-2], e26prev=ema26[len-2];
+      const rPrev=rsiArr[len-2]||50; const rNow=rsiArr[len-1]||50;
+      const mPrev=macdObj.macdLine[len-2] - macdObj.signal[len-2];
+      const mNow=macdObj.macdLine[len-1] - macdObj.signal[len-1];
+      return ((e12prev<=e26prev && e12>e26) || (e12prev>=e26prev && e12<e26)) && ((rPrev<=50 && rNow>50) || (rPrev>=50 && rNow<50)) && ((mPrev<=0 && mNow>0) || (mPrev>=0 && mNow<0));
+    })();
+
+    return {score, type, dir, reasons, confidence, trendFlip};
+  }
+
+  /*********************
+   * FETCH DATOS REALES * (Binance públicos, sin API key)
+   *********************/
+  const SYMBOLS = {
+    BTC:{ name:'Bitcoin', pair:'BTCUSDT' },
+    ETH:{ name:'Ethereum', pair:'ETHUSDT' },
+    BNB:{ name:'BNB', pair:'BNBUSDT' },
+    SOL:{ name:'Solana', pair:'SOLUSDT' },
+    ADA:{ name:'Cardano', pair:'ADAUSDT' },
+    XRP:{ name:'XRP', pair:'XRPUSDT' },
+    DOGE:{ name:'Dogecoin', pair:'DOGEUSDT' },
+    AVAX:{ name:'Avalanche', pair:'AVAXUSDT' },
+    TRX:{ name:'TRON', pair:'TRXUSDT' },
+    LINK:{ name:'Chainlink', pair:'LINKUSDT' },
+    DOT:{ name:'Polkadot', pair:'DOTUSDT' },
+    MATIC:{ name:'Polygon', pair:'MATICUSDT' },
+    LTC:{ name:'Litecoin', pair:'LTCUSDT' },
+    BCH:{ name:'Bitcoin Cash', pair:'BCHUSDT' },
+    UNI:{ name:'Uniswap', pair:'UNIUSDT' },
+    ATOM:{ name:'Cosmos', pair:'ATOMUSDT' },
+    ETC:{ name:'Ethereum Classic', pair:'ETCUSDT' },
+    NEAR:{ name:'NEAR', pair:'NEARUSDT' },
+    APT:{ name:'Aptos', pair:'APTUSDT' },
+    FIL:{ name:'Filecoin', pair:'FILUSDT' }
+  };
+  const TF_MAP = { '15m':'15m', '1h':'1h', '4h':'4h', '1d':'1d' };
+
+  async function fetchKlines(pair, interval, limit=240){
+    const url = `https://api.binance.com/api/v3/klines?symbol=${pair}&interval=${interval}&limit=${limit}`;
+    const res = await fetch(url, {cache:'no-store'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const data = await res.json();
+    // kline: [openTime, open, high, low, close, volume, closeTime, ...]
+    const o=[],h=[],l=[],c=[],v=[],t=[];
+    for(const k of data){
+      t.push(k[0]); o.push(+k[1]); h.push(+k[2]); l.push(+k[3]); c.push(+k[4]); v.push(+k[5]);
+    }
+    return {t,o,h,l,c,v};
+  }
+
+  async function computeReal(symbol, tf){
+    const meta = SYMBOLS[symbol];
+    const interval = TF_MAP[tf]||'1h';
+    const series = await fetchKlines(meta.pair, interval, 240);
+    const ema12 = ema(series.c, 12), ema26 = ema(series.c, 26);
+    const rsiArr = rsi(series.c, 14);
+    const macdObj = macd(series.c,12,26,9);
+    const atrArr = atr(series.h, series.l, series.c, 14);
+    const recent = []; const n=series.c.length; const from=Math.max(0,n-20);
+    for(let i=from;i<n;i++){ recent.push({o:series.o[i],h:series.h[i],l:series.l[i],c:series.c[i]}); }
+    const pats = detectPatterns(recent);
+    const signal = scoreSignal({closes:series.c, rsiArr, macdObj, ema12, ema26, vol:series.v, patterns:pats});
+    return {series, ema12, ema26, rsiArr, macdObj, atrArr, pats, signal, pair:meta.pair};
+  }
+
+  /*******************
+   * RENDER & STATE   *
+   *******************/
+  const $list = document.getElementById('list');
+  const $q = document.getElementById('q');
+  const $filter = document.getElementById('filter');
+  const $tf = document.getElementById('tf');
+  const $title = document.getElementById('title');
+  const $kpis = document.getElementById('kpis');
+  const $bigAlert = document.getElementById('bigAlert');
+  const $chart = document.getElementById('chart');
+  const $rsiChart = document.getElementById('rsiChart');
+  const $macdChart = document.getElementById('macdChart');
+  const $lastUpdate = document.getElementById('lastUpdate');
+  const $alarmBtn = document.getElementById('alarmBtn');
+  const $toast = document.getElementById('toast');
+  const $beep = document.getElementById('beep');
+
+  let STATE = { tf:'1h', data:{}, focus:'BTC' };
+  let ALARM = { enabled:false, lastNotice:{} };
+
+  function showToast(html){
+    $toast.innerHTML = html; $toast.style.display='block';
+    setTimeout(()=> $toast.style.display='none', 8000);
+  }
+
+  async function refreshAll(){
+    const tf = STATE.tf; const keys = Object.keys(SYMBOLS);
+    try{
+      const out = await Promise.all(keys.map(k=> computeReal(k, tf)));
+      STATE.data={}; keys.forEach((k,i)=> STATE.data[k]=out[i]);
+      renderList();
+      if(!STATE.focus || !SYMBOLS[STATE.focus]) STATE.focus = keys[0];
+      renderDetail(STATE.focus);
+      $lastUpdate.textContent = new Date().toLocaleString();
+      evaluateAlarm();
+    }catch(err){
+      console.error('Error de red:', err);
+      showToast(`<b>⚠️ Fallo al cargar datos en tiempo real</b><div class="small muted">${String(err)}</div>`);
+    }
+  }
+
+  function renderList(){
+    const query = ($q.value||'').trim().toUpperCase();
+    const filter = $filter.value;
+    $list.innerHTML='';
+    for(const sym of Object.keys(SYMBOLS)){
+      if(query && !sym.includes(query)) continue;
+      const d = STATE.data[sym]; if(!d) continue;
+      if(filter==='buy' && d.signal.dir!=='buy') continue;
+      if(filter==='sell' && d.signal.dir!=='sell') continue;
+      const row = document.createElement('div'); row.className='row'; row.onclick=()=>{ STATE.focus=sym; renderDetail(sym); window.scrollTo({top:0,behavior:'smooth'}); };
+      row.innerHTML = `
+        <div class="sym">${sym}</div>
+        <div>
+          <div><b>${SYMBOLS[sym].name}</b> <span class="small muted mono">${d.pair}</span></div>
+          <div class="small muted">Señal: <span class="sig ${d.signal.dir}">${d.signal.type}</span> · Confianza <span class="mono">${d.signal.confidence}%</span></div>
+        </div>
+        <div class="chip mono">EMA12 ${d.ema12.at(-1).toFixed(2)} · EMA26 ${d.ema26.at(-1).toFixed(2)}</div>
+      `;
+      $list.appendChild(row);
+    }
+  }
+
+  function renderDetail(sym){
+    const d = STATE.data[sym]; if(!d) return;
+    $title.innerHTML = `${sym} · ${SYMBOLS[sym].name} <span class="badge ${d.signal.dir}">${d.signal.type}</span>`;
+
+    if(d.signal.trendFlip){
+      $bigAlert.style.display='flex';
+      const dirTxt = d.signal.dir==='buy'? 'alcista' : 'bajista';
+      $bigAlert.innerHTML = `<span class="badge ${d.signal.dir} pulse">Flip</span> <b>Posible cambio de tendencia ${dirTxt}</b> · Señales: ${d.signal.reasons.slice(0,3).join(' · ')}`;
+    } else {
+      $bigAlert.style.display='none';
+    }
+
+    const close = d.series.c.at(-1);
+    const rsiNow = d.rsiArr.at(-1) || 50;
+    const atrNow = d.atrArr.at(-1) || 0;
+    const macdNow = (d.macdObj.macdLine.at(-1)||0) - (d.macdObj.signal.at(-1)||0);
+    $kpis.innerHTML = `
+      <div class="kpi"><div class="lbl">Precio</div><div class="val mono">${close.toFixed(4)}</div></div>
+      <div class="kpi"><div class="lbl">RSI 14</div><div class="val mono" style="color:${rsiNow<30?'var(--bull)':rsiNow>70?'var(--bear)':'#e4ebff'}">${rsiNow.toFixed(1)}</div></div>
+      <div class="kpi"><div class="lbl">MACD hist</div><div class="val mono" style="color:${macdNow>=0?'var(--bull)':'var(--bear)'}">${macdNow.toFixed(5)}</div></div>
+      <div class="kpi"><div class="lbl">ATR</div><div class="val mono">${atrNow.toFixed(5)}</div></div>
+    `;
+
+    drawCandles($chart, d.series, d.ema12, d.ema26);
+    drawLine($rsiChart, d.rsiArr.map(x=>x??50), {yMin:0, yMax:100, bands:[{y:30,color:'var(--bull)'},{y:70,color:'var(--bear)'}]});
+    const macdLine = d.macdObj.macdLine.map(x=>x??0), sigLine = d.macdObj.signal.map(x=>x??0);
+    drawLines($macdChart, [macdLine, sigLine], {legend:['MACD','Signal']});
+  }
+
+  /*******************
+   * DIBUJO: CHARTING *
+   *******************/
+  function drawCandles(canvas, series, ema12, ema26){
+    const ctx = canvas.getContext('2d'); const W=canvas.clientWidth, H=canvas.clientHeight; canvas.width=W*2; canvas.height=H*2; ctx.scale(2,2);
+    ctx.clearRect(0,0,W,H);
+    const n = series.c.length; const padL=50, padR=10, padT=10, padB=20; const plotW=W-padL-padR, plotH=H-padT-padB;
+    const win = Math.min(180, n); const max = Math.max(...series.h.slice(-win)); const min=Math.min(...series.l.slice(-win));
+    const xStep = plotW/win; const start = n-win; 
+    const y = (v)=> padT + (max-v)*plotH/(max-min || 1);
+
+    // grid
+    ctx.strokeStyle='rgba(255,255,255,.06)'; ctx.lineWidth=1; ctx.beginPath(); for(let i=0;i<=4;i++){ const yy = padT + (plotH*i/4); ctx.moveTo(padL, yy); ctx.lineTo(W-padR, yy);} ctx.stroke();
+
+    // candles
+    for(let i=0;i<win;i++){
+      const idx=start+i; const o=series.o[idx], h=series.h[idx], l=series.l[idx], c=series.c[idx];
+      const x = padL + i*xStep + xStep*0.5; const bull = c>=o;
+      ctx.strokeStyle='rgba(255,255,255,.5)'; ctx.beginPath(); ctx.moveTo(x, y(l)); ctx.lineTo(x, y(h)); ctx.stroke();
+      const w = Math.max(1, xStep*0.55); const x0=x-w/2, y0=y(Math.max(o,c)), y1=y(Math.min(o,c));
+      ctx.fillStyle = bull? 'rgba(0,255,136,.8)' : 'rgba(255,59,105,.8)';
+      ctx.fillRect(x0, y0, w, Math.max(1, y1-y0));
+    }
+
+    function pathLine(arr, color){ ctx.beginPath(); ctx.moveTo(padL, y(arr[start])); for(let i=1;i<win;i++){ ctx.lineTo(padL + i*xStep + xStep*0.5, y(arr[start+i])); } ctx.strokeStyle=color; ctx.lineWidth=1.6; ctx.stroke(); }
+    pathLine(ema12, 'rgba(0,255,136,.9)');
+    pathLine(ema26, 'rgba(255,59,105,.9)');
+
+    ctx.fillStyle='rgba(255,255,255,.6)'; ctx.font='12px Inter, sans-serif';
+    for(let i=0;i<=4;i++){ const vv = (min + (max-min)*(1-i/4)); const yy=padT + (plotH*i/4)+4; ctx.fillText(vv.toFixed(4), W-padR-56, yy); }
+  }
+
+  function drawLine(canvas, arr, {yMin=null, yMax=null, bands=[]}={}){
+    const ctx=canvas.getContext('2d'); const W=canvas.clientWidth, H=canvas.clientHeight; canvas.width=W*2; canvas.height=H*2; ctx.scale(2,2);
+    ctx.clearRect(0,0,W,H);
+    const n=arr.length; const pad=12; const plotW=W-pad*2, plotH=H-pad*2; const win=Math.min(180,n); const start=n-win;
+    const subset = arr.slice(start);
+    const max = yMax!=null? yMax : Math.max(...subset); const min = yMin!=null? yMin : Math.min(...subset);
+    const xStep = plotW/(subset.length-1 || 1); const y=(v)=> pad+(max-v)*plotH/(max-min || 1);
+
+    bands.forEach(b=>{ ctx.setLineDash([4,4]); ctx.strokeStyle=b.color; ctx.beginPath(); ctx.moveTo(pad, y(b.y)); ctx.lineTo(W-pad, y(b.y)); ctx.stroke(); ctx.setLineDash([]);});
+
+    ctx.beginPath(); ctx.moveTo(pad, y(subset[0])); for(let i=1;i<subset.length;i++){ ctx.lineTo(pad + i*xStep, y(subset[i])); }
+    ctx.strokeStyle='rgba(223,230,255,.95)'; ctx.lineWidth=1.8; ctx.stroke();
+  }
+
+  function drawLines(canvas, seriesArr, {legend=[]}={}){
+    const ctx=canvas.getContext('2d'); const W=canvas.clientWidth, H=canvas.clientHeight; canvas.width=W*2; canvas.height=H*2; ctx.scale(2,2);
+    ctx.clearRect(0,0,W,H);
+    const pad=12; const plotW=W-pad*2, plotH=H-pad*2; const n=Math.max(...seriesArr.map(s=>s.length)); const win=Math.min(180,n); const start=n-win;
+    const max=Math.max(...seriesArr.map(a=>a.slice(start)).flat()); const min=Math.min(...seriesArr.map(a=>a.slice(start)).flat());
+    const y=(v)=> pad+(max-v)*plotH/(max-min || 1);
+    const xStep = plotW/(win-1 || 1);
+
+    const colors=['rgba(0,255,136,.9)','rgba(255,59,105,.9)','rgba(223,230,255,.95)'];
+    seriesArr.forEach((arr,idx)=>{
+      ctx.beginPath(); ctx.moveTo(pad, y(arr[start]));
+      for(let i=1;i<win;i++){ ctx.lineTo(pad + i*xStep, y(arr[start+i])); }
+      ctx.strokeStyle=colors[idx%colors.length]; ctx.lineWidth=1.6; ctx.stroke();
+    });
+
+    if(legend.length){ ctx.font='12px Inter, sans-serif'; ctx.fillStyle='rgba(255,255,255,.7)'; legend.forEach((t,i)=>{ ctx.fillText(t, pad+8 + i*80, pad+12); }); }
+  }
+
+  /*******************
+   * ALARMA            *
+   *******************/
+  function optimalOpportunity(d){
+    // Criterios conservadores: señal fuerte + confianza >= 60 + (flip opcional suma fuerza)
+    const strong = d.signal.type === 'Strong Buy' || d.signal.type === 'Strong Sell';
+    const confOK = d.signal.confidence >= 60;
+    return strong && confOK; // puedes añadir d.signal.trendFlip para hacerlo más estricto
+  }
+
+  async function maybeNotify(sym, d){
+    const now = Date.now(); const key = sym+'-'+STATE.tf+'-'+d.signal.type; const last = ALARM.lastNotice[key]||0;
+    if(now - last < 10*60*1000) return; // anti-spam 10 min
+    ALARM.lastNotice[key]=now;
+
+    const verb = d.signal.type.includes('Buy')? 'COMPRA' : 'VENTA';
+    const html = `<b>🔔 Oportunidad de ${verb} en ${sym}</b>
+      <div class="small">${SYMBOLS[sym].name} · ${d.signal.type} · Confianza ${d.signal.confidence}%</div>
+      <div class="small muted">Razones: ${d.signal.reasons.slice(0,3).join(' · ')}</div>`;
+    showToast(html);
+
+    /* ===== ÚNICO CAMBIO DENTRO DE maybeNotify ===== */
+    try{ playSirena(); }catch(_){/* ignore */}
+    /* ============================================== */
+
+    if('Notification' in window && Notification.permission==='granted') new Notification(`Oportunidad de ${verb} — ${sym}`, {body:`${d.signal.type} · Conf ${d.signal.confidence}%`, silent:true});
+  }
+
+  function evaluateAlarm(){
+    if(!ALARM.enabled) return;
+    for(const sym of Object.keys(SYMBOLS)){
+      const d = STATE.data[sym]; if(!d) continue;
+      if(optimalOpportunity(d)) maybeNotify(sym,d);
+    }
+  }
+
+  /************
+   * EVENTS   *
+   ************/
+  $q.addEventListener('input', renderList);
+  /* 👇 añadido para que el select filtre al cambiar */
+  $q.addEventListener('change', renderList);
+  $filter.addEventListener('change', renderList);
+  $tf.addEventListener('change', ()=>{ STATE.tf=$tf.value; refreshAll(); });
+  document.getElementById('refresh').addEventListener('click', refreshAll);
+
+  $alarmBtn.addEventListener('click', async ()=>{
+    ALARM.enabled = !ALARM.enabled;
+    $alarmBtn.textContent = 'Alarma: ' + (ALARM.enabled? 'ON' : 'OFF');
+    $alarmBtn.classList.toggle('on', ALARM.enabled);
+    if(ALARM.enabled && 'Notification' in window && Notification.permission!=='granted'){
+      try{ await Notification.requestPermission(); }catch(_){/* ignore */}
+    }
+    if(ALARM.enabled){ showToast('<b>🔔 Alarma activada</b><div class="small muted">Te avisaré cuando haya señales fuertes de compra o venta.</div>'); }
+  });
+
+  // Auto refresh cada 60s
+  setInterval(refreshAll, 60000);
+
+  // Init
+  (async()=>{ await refreshAll(); })();
+
+  </script>
+</body>
+</html>
