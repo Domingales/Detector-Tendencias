@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="utf-8" />
@@ -15,23 +15,51 @@
       --bear:#ff3b69;       /* bajista */
       --warn:#ffd369;       /* aviso */
       --card-grad: linear-gradient(160deg, rgba(255,255,255,0.04), rgba(255,255,255,0));
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", 
+
+"Courier New", monospace;
       --round: 16px;
       --shadow: 0 6px 24px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.04);
     }
     *{box-sizing:border-box}
     html,body{height:100%}
-    body{margin:0; background:radial-gradient(1000px 600px at 20% -10%, #152058 0%, transparent 60%), var(--bg); color:var(--txt); font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";}
+    body{margin:0; background:radial-gradient(1000px 600px at 20% -10%, #152058 0%, 
+
+transparent 60%), var(--bg); color:var(--txt); font-family: Inter, system-ui, -apple-system, 
+
+Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial, "Apple Color 
+
+Emoji", "Segoe UI Emoji";}
 
     /* Topbar */
-    .topbar{position:sticky; top:0; z-index:50; display:flex; gap:12px; align-items:center; padding:14px 16px; background:linear-gradient(180deg, rgba(10,14,39,.95) 0%, rgba(10,14,39,.75) 65%, rgba(10,14,39,0) 100%); backdrop-filter: blur(8px); border-bottom:1px solid rgba(255,255,255,.06)}
+    .topbar{position:sticky; top:0; z-index:50; display:flex; gap:12px; align-items:center; 
+
+padding:14px 16px; background:linear-gradient(180deg, rgba(10,14,39,.95) 0%, rgba
+
+(10,14,39,.75) 65%, rgba(10,14,39,0) 100%); backdrop-filter: blur(8px); border-bottom:1px 
+
+solid rgba(255,255,255,.06)}
     .brand{font-weight:800; letter-spacing:.4px}
     .brand b{color:var(--bull)}
-    .tag{font-size:12px; padding:4px 8px; border:1px solid rgba(255,255,255,.08); border-radius:999px; color:var(--muted)}
-    .search{flex:1; display:flex; align-items:center; gap:10px; background:var(--panel); border:1px solid rgba(255,255,255,.06); border-radius:999px; padding:8px 12px; box-shadow:var(--shadow)}
+    .tag{font-size:12px; padding:4px 8px; border:1px solid rgba(255,255,255,.08); border-
+
+radius:999px; color:var(--muted)}
+    .search{flex:1; display:flex; align-items:center; gap:10px; background:var(--panel); 
+
+border:1px solid rgba(255,255,255,.06); border-radius:999px; padding:8px 12px; box-
+
+shadow:var(--shadow)}
     /* 👇 Nuevo: estilo del select dentro de la barra de búsqueda */
-    .search select{flex:1; background:transparent; border:0; outline:0; color:var(--txt); font-size:14px; appearance:none}
-    .btn{appearance:none; border:1px solid rgba(255,255,255,.08); background:var(--panel-2); color:var(--txt); padding:10px 14px; border-radius:12px; cursor:pointer; transition: transform .06s ease, background .2s ease; box-shadow:var(--shadow); font-weight:600}
+    .search select{flex:1; background:transparent; border:0; outline:0; color:var(--txt); 
+
+font-size:14px; appearance:none}
+    .btn{appearance:none; border:1px solid rgba(255,255,255,.08); background:var(--
+
+panel-2); color:var(--txt); padding:10px 14px; border-radius:12px; cursor:pointer; 
+
+transition: transform .06s ease, background .2s ease; box-shadow:var(--shadow); font-
+
+weight:600}
     .btn:hover{transform: translateY(-1px)}
     .btn.on{outline:2px solid var(--bull)}
 
@@ -41,27 +69,43 @@
     @media (max-width: 980px){ .grid{grid-template-columns: 1fr} }
 
     /* Cards */
-    .card{background: var(--panel); border:1px solid rgba(255,255,255,.06); border-radius:var(--round); box-shadow:var(--shadow); overflow:hidden; position:relative}
-    .cardHeader{display:flex; align-items:center; justify-content:space-between; padding:12px 14px; background:var(--card-grad); border-bottom:1px solid rgba(255,255,255,.06)}
+    .card{background: var(--panel); border:1px solid rgba(255,255,255,.06); border-
+
+radius:var(--round); box-shadow:var(--shadow); overflow:hidden; position:relative}
+    .cardHeader{display:flex; align-items:center; justify-content:space-between; 
+
+padding:12px 14px; background:var(--card-grad); border-bottom:1px solid rgba
+
+(255,255,255,.06)}
     .cardTitle{font-weight:700}
     .cardBody{padding:12px 14px}
 
     /* List */
-    .list{display:flex; flex-direction:column; gap:10px; max-height: calc(100vh - 180px); overflow:auto; padding:12px}
-    .row{display:grid; grid-template-columns: 28px 1fr auto; align-items:center; gap:10px; padding:10px; border-radius:12px; background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0)); border:1px solid rgba(255,255,255,.06)}
+    .list{display:flex; flex-direction:column; gap:10px; max-height: calc(100vh - 180px); 
+
+overflow:auto; padding:12px}
+    .row{display:grid; grid-template-columns: 28px 1fr auto; align-items:center; gap:10px; 
+
+padding:10px; border-radius:12px; background:linear-gradient(180deg, rgba
+
+(255,255,255,0.03), rgba(255,255,255,0)); border:1px solid rgba(255,255,255,.06)}
     .row:hover{outline:1px solid rgba(255,255,255,.08)}
     .sym{font-weight:800; color:#cfe6ff}
     .name{color:var(--muted); font-size:12px}
     .sig{font-family:var(--mono); font-weight:700}
     .sig.buy{color:var(--bull)}
     .sig.sell{color:var(--bear)}
-    .chip{font-size:11px; padding:2px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.08); color:var(--muted)}
+    .chip{font-size:11px; padding:2px 8px; border-radius:999px; border:1px solid rgba
+
+(255,255,255,.08); color:var(--muted)}
 
     /* Detail pane */
     .detail{display:grid; grid-template-rows:auto auto 1fr; gap:12px}
     .kpis{display:grid; grid-template-columns: repeat(4, 1fr); gap:10px}
     @media (max-width: 640px){ .kpis{grid-template-columns: repeat(2, 1fr)} }
-    .kpi{background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,0)); border:1px solid rgba(255,255,255,.06); padding:12px; border-radius:12px}
+    .kpi{background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,0)); 
+
+border:1px solid rgba(255,255,255,.06); padding:12px; border-radius:12px}
     .kpi .lbl{color:var(--muted); font-size:12px}
     .kpi .val{font-family:var(--mono); font-size:20px}
 
@@ -72,16 +116,26 @@
     /* Sub-panels */
     .subgrid{display:grid; grid-template-columns: 1fr 1fr; gap:12px}
     @media (max-width: 840px){ .subgrid{grid-template-columns: 1fr} }
-    .alert{padding:10px 12px; border-radius:12px; border:1px dashed rgba(255,255,255,.12); background: linear-gradient(90deg, rgba(0,255,136,.08), rgba(255,59,105,.08)); display:flex; align-items:center; gap:10px}
+    .alert{padding:10px 12px; border-radius:12px; border:1px dashed rgba
+
+(255,255,255,.12); background: linear-gradient(90deg, rgba(0,255,136,.08), rgba
+
+(255,59,105,.08)); display:flex; align-items:center; gap:10px}
     .alert b{letter-spacing:.3px}
 
     /* Badges */
-    .badge{padding:6px 10px; border-radius:999px; font-size:12px; border:1px solid rgba(255,255,255,.1)}
+    .badge{padding:6px 10px; border-radius:999px; font-size:12px; border:1px solid rgba
+
+(255,255,255,.1)}
     .badge.buy{background:rgba(0,255,136,.08); color:var(--bull)}
     .badge.sell{background:rgba(255,59,105,.08); color:var(--bear)}
     .badge.neutral{background:rgba(255,255,255,.06); color:#d5dcff}
 
-    .toast{position:fixed; right:16px; bottom:16px; background:var(--panel-2); border:1px solid rgba(255,255,255,.12); padding:12px 14px; border-radius:12px; box-shadow:var(--shadow); display:none; max-width:360px}
+    .toast{position:fixed; right:16px; bottom:16px; background:var(--panel-2); border:1px 
+
+solid rgba(255,255,255,.12); padding:12px 14px; border-radius:12px; box-shadow:var(--
+
+shadow); display:none; max-width:360px}
 
     .muted{color:var(--muted)}
     .small{font-size:12px}
@@ -91,14 +145,22 @@
 
     /* Simple animations */
     .pulse{animation:pulse 2.4s ease-in-out infinite}
-    @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(0,255,136,.25)}70%{box-shadow:0 0 0 14px rgba(0,255,136,0)}100%{box-shadow:0 0 0 0 rgba(0,255,136,0)}}
+    @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(0,255,136,.25)}70%{box-shadow:0 0 0 
+
+14px rgba(0,255,136,0)}100%{box-shadow:0 0 0 0 rgba(0,255,136,0)}}
   </style>
 </head>
 <body>
   <div class="topbar">
-    <div class="brand">Cripto<b>TA</b> <span class="tag">v0.2 · Datos reales (Binance)</span></div>
+    <div class="brand">Cripto<b>TA</b> <span class="tag">v0.2 · Datos reales 
+
+(Binance)</span></div>
     <div class="search">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21 21l-4.3-4.3" stroke="#9fb3ff" stroke-width="2" stroke-linecap="round"/><circle cx="11" cy="11" r="7" stroke="#9fb3ff" stroke-width="2" fill="none"/></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21 21l-4.3-
+
+4.3" stroke="#9fb3ff" stroke-width="2" stroke-linecap="round"/><circle cx="11" cy="11" 
+
+r="7" stroke="#9fb3ff" stroke-width="2" fill="none"/></svg>
       <!-- 🔽 Sustitución: input → select con scroll de 20 criptos -->
       <select id="q" title="Selecciona cripto">
         <option value="">Todas (20)</option>
@@ -131,7 +193,9 @@
       <option value="1d">1d</option>
     </select>
     <button id="refresh" class="btn">Actualizar</button>
-    <button id="alarmBtn" class="btn" title="Alarma de oportunidades">Alarma: OFF</button>
+    <button id="alarmBtn" class="btn" title="Alarma de oportunidades">Alarma: 
+
+OFF</button>
   </div>
 
   <div class="container">
@@ -166,7 +230,9 @@
         </div>
 
         <div class="card">
-          <div class="cardHeader"><div class="cardTitle">Gráfico</div><div class="small muted" id="lastUpdate">-</div></div>
+          <div class="cardHeader"><div class="cardTitle">Gráfico</div><div class="small 
+
+muted" id="lastUpdate">-</div></div>
           <div class="cardBody chartWrap">
             <canvas id="chart"></canvas>
           </div>
@@ -190,10 +256,16 @@
   <div id="toast" class="toast"></div>
 
   <!-- Beep embebido para la alarma (lo dejo intacto, aunque ya no se usa) -->
-  <audio id="beep" preload="auto" src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABYAZGF0YQAAAAAAAAB/////AP///wD///8A////AP7//wD9//8A/f//AP3//wD+//8A////AP///wD///8A"/>
+  <audio id="beep" preload="auto" 
+
+src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAA
+
+CABYAZGF0YQAAAAAAAAB/////AP///wD///8A////AP7//wD9//8A/f//AP3//wD
+
++//8A////AP///wD///8A"></audio>
 
   <script>
-  /* ======= NUEVO: función de sirena (único añadido) ======= */
+  /* ======= 1) NUEVO: función de sirena suavizada ======= */
   function playSirena(){
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
     const osc = ctx.createOscillator();
@@ -207,8 +279,8 @@
     // Oscilación suave entre 400 y 700 Hz durante 10 segundos
     const duration = 10;
     const step = 0.5; // segundos
-    for(let t=0; t<duration; t+=step){
-      const freq = (t % 1 === 0) ? 400 : 700;
+    for(let t=0; t<=duration; t+=step){
+      const freq = 400 + 300 * Math.sin((t / duration) * Math.PI * 4);
       osc.frequency.linearRampToValueAtTime(freq, ctx.currentTime + t);
     }
 
@@ -221,6 +293,11 @@
    * UTILIDADES BÁSICAS *
    **********************/
   const rand = (a,b)=> a + Math.random()*(b-a);
+
+  /* ======= 2) NUEVO helper para compatibilidad .at(-1) ======= */
+  const last = arr => arr[arr.length - 1];
+  /* =========================================================== */
+
   const ema = (values, period)=>{
     const k = 2/(period+1); const out=[]; let prev;
     for(let i=0;i<values.length;i++){
@@ -230,11 +307,17 @@
   const rsi = (closes, period=14)=>{
     if(closes.length<period+2) return Array(closes.length).fill(null);
     let gains=0, losses=0; const rsis = Array(closes.length).fill(null);
-    for(let i=1;i<=period;i++){ const diff=closes[i]-closes[i-1]; if(diff>=0) gains+=diff; else losses-=diff; }
-    let avgGain=gains/period, avgLoss=losses/period; rsis[period]= avgLoss===0? 100 : 100 - (100/(1+avgGain/avgLoss));
+    for(let i=1;i<=period;i++){ const diff=closes[i]-closes[i-1]; if(diff>=0) gains+=diff; else 
+
+losses-=diff; }
+    let avgGain=gains/period, avgLoss=losses/period; rsis[period]= avgLoss===0? 100 : 100 
+
+- (100/(1+avgGain/avgLoss));
     for(let i=period+1;i<closes.length;i++){
       const diff=closes[i]-closes[i-1]; const gain=Math.max(diff,0), loss=Math.max(-diff,0);
-      avgGain = (avgGain*(period-1)+gain)/period; avgLoss = (avgLoss*(period-1)+loss)/period;
+      avgGain = (avgGain*(period-1)+gain)/period; avgLoss = (avgLoss*(period-
+
+1)+loss)/period;
       rsis[i] = avgLoss===0? 100 : 100 - (100/(1+avgGain/avgLoss));
     }
     return rsis;
@@ -261,21 +344,25 @@
 
   function detectPatterns(candles){
     const res=[]; const n=candles.length; if(!n) return res;
-    const last = (k)=> candles[n-k];
+    const lastC = (k)=> candles[n-k];
     const body = (c)=> Math.abs(c.c-c.o);
     const range = (c)=> c.h-c.l;
     const isBull = (c)=> c.c>c.o; const isBear=(c)=> c.o>c.c;
 
-    const c1 = last(1); if(c1){
+    const c1 = lastC(1); if(c1){
       const br=range(c1), bb=body(c1);
       const lower=c1.o<c1.c? (c1.o - c1.l):(c1.c - c1.l);
       const upper=c1.h - (c1.o<c1.c? c1.c : c1.o);
       if(lower>2*bb && upper<bb) res.push({key:'Hammer', dir:'bull'});
       if(upper>2*bb && lower<bb) res.push({key:'Inverted Hammer', dir:'bull'});
     }
-    const a=last(2), b=last(1); if(a&&b){
-      if(isBear(a)&&isBull(b)&& b.c>a.o && b.o<a.c) res.push({key:'Bullish Engulfing', dir:'bull'});
-      if(isBull(a)&&isBear(b)&& b.o>a.c && b.c<a.o) res.push({key:'Bearish Engulfing', dir:'bear'});
+    const a=lastC(2), b=lastC(1); if(a&&b){
+      if(isBear(a)&&isBull(b)&& b.c>a.o && b.o<a.c) res.push({key:'Bullish Engulfing', 
+
+dir:'bull'});
+      if(isBull(a)&&isBear(b)&& b.o>a.c && b.c<a.o) res.push({key:'Bearish Engulfing', 
+
+dir:'bear'});
     }
     if(c1){
       const br=range(c1), bb=body(c1);
@@ -288,13 +375,27 @@
 
   function scoreSignal({closes, rsiArr, macdObj, ema12, ema26, vol, patterns}){
     let score=0; const reasons=[];
-    const r=rsiArr.at(-1)||0; if(r<30){score+=15; reasons.push('RSI sobreventa');} else if(r>70){score-=15; reasons.push('RSI sobrecompra');}
-    const e12=ema12.at(-1), e26=ema26.at(-1); if(e12>e26){score+=20; reasons.push('EMA12>EMA26');} else {score-=20; reasons.push('EMA12<EMA26');}
-    const m=macdObj.macdLine.at(-1)||0, s=macdObj.signal.at(-1)||0; if(m>s){score+=18; reasons.push('MACD>Signal');} else {score-=18; reasons.push('MACD<Signal');}
-    const vNow=vol.at(-1)||0, vAvg = vol.slice(-20).reduce((a,b)=>a+b,0)/Math.max(1,Math.min(20,vol.length)); if(vNow>vAvg*1.5){score+=12; reasons.push('Volumen anómalo');}
-    const p=patterns.at(-1); if(p){ if(p.dir==='bull') {score+=15; reasons.push('Patrón '+p.key);} else if(p.dir==='bear'){score-=15; reasons.push('Patrón '+p.key);} }
+    const r= last(rsiArr) || 0; if(r<30){score+=15; reasons.push('RSI sobreventa');} else if
 
-    const type = score>=40? 'Strong Buy' : score>=10? 'Buy' : score<=-40? 'Strong Sell' : score<=-10? 'Sell' : 'Neutral';
+(r>70){score-=15; reasons.push('RSI sobrecompra');}
+    const e12= last(ema12), e26= last(ema26); if(e12>e26){score+=20; reasons.push
+
+('EMA12>EMA26');} else {score-=20; reasons.push('EMA12<EMA26');}
+    const m= last(macdObj.macdLine) || 0, s= last(macdObj.signal) || 0; if(m>s){score+=18; 
+
+reasons.push('MACD>Signal');} else {score-=18; reasons.push('MACD<Signal');}
+    const vNow= last(vol) || 0, vAvg = vol.slice(-20).reduce((a,b)=>a+b,0)/Math.max
+
+(1,Math.min(20,vol.length)); if(vNow>vAvg*1.5){score+=12; reasons.push('Volumen 
+
+anómalo');}
+    const p= last(patterns); if(p){ if(p.dir==='bull') {score+=15; reasons.push('Patrón 
+
+'+p.key);} else if(p.dir==='bear'){score-=15; reasons.push('Patrón '+p.key);} }
+
+    const type = score>=40? 'Strong Buy' : score>=10? 'Buy' : score<=-40? 'Strong Sell' : 
+
+score<=-10? 'Sell' : 'Neutral';
     const dir = score>=10? 'buy' : score<=-10? 'sell' : 'neutral';
     const confidence = Math.min(99, Math.max(0, Math.round(Math.abs(score)*1.4)));
     const trendFlip = ( ()=>{
@@ -303,7 +404,11 @@
       const rPrev=rsiArr[len-2]||50; const rNow=rsiArr[len-1]||50;
       const mPrev=macdObj.macdLine[len-2] - macdObj.signal[len-2];
       const mNow=macdObj.macdLine[len-1] - macdObj.signal[len-1];
-      return ((e12prev<=e26prev && e12>e26) || (e12prev>=e26prev && e12<e26)) && ((rPrev<=50 && rNow>50) || (rPrev>=50 && rNow<50)) && ((mPrev<=0 && mNow>0) || (mPrev>=0 && mNow<0));
+      return ((e12prev<=e26prev && e12>e26) || (e12prev>=e26prev && e12<e26)) && 
+
+((rPrev<=50 && rNow>50) || (rPrev>=50 && rNow<50)) && ((mPrev<=0 && mNow>0) || 
+
+(mPrev>=0 && mNow<0));
     })();
 
     return {score, type, dir, reasons, confidence, trendFlip};
@@ -337,14 +442,18 @@
   const TF_MAP = { '15m':'15m', '1h':'1h', '4h':'4h', '1d':'1d' };
 
   async function fetchKlines(pair, interval, limit=240){
-    const url = `https://api.binance.com/api/v3/klines?symbol=${pair}&interval=${interval}&limit=${limit}`;
+    const url = `https://api.binance.com/api/v3/klines?symbol=${pair}&interval=
+
+${interval}&limit=${limit}`;
     const res = await fetch(url, {cache:'no-store'});
     if(!res.ok) throw new Error('HTTP '+res.status);
     const data = await res.json();
     // kline: [openTime, open, high, low, close, volume, closeTime, ...]
     const o=[],h=[],l=[],c=[],v=[],t=[];
     for(const k of data){
-      t.push(k[0]); o.push(+k[1]); h.push(+k[2]); l.push(+k[3]); c.push(+k[4]); v.push(+k[5]);
+      t.push(k[0]); o.push(+k[1]); h.push(+k[2]); l.push(+k[3]); c.push(+k[4]); v.push(+k
+
+[5]);
     }
     return {t,o,h,l,c,v};
   }
@@ -358,9 +467,13 @@
     const macdObj = macd(series.c,12,26,9);
     const atrArr = atr(series.h, series.l, series.c, 14);
     const recent = []; const n=series.c.length; const from=Math.max(0,n-20);
-    for(let i=from;i<n;i++){ recent.push({o:series.o[i],h:series.h[i],l:series.l[i],c:series.c[i]}); }
+    for(let i=from;i<n;i++){ recent.push({o:series.o[i],h:series.h[i],l:series.l[i],c:series.c
+
+[i]}); }
     const pats = detectPatterns(recent);
-    const signal = scoreSignal({closes:series.c, rsiArr, macdObj, ema12, ema26, vol:series.v, patterns:pats});
+    const signal = scoreSignal({closes:series.c, rsiArr, macdObj, ema12, ema26, vol:series.v, 
+
+patterns:pats});
     return {series, ema12, ema26, rsiArr, macdObj, atrArr, pats, signal, pair:meta.pair};
   }
 
@@ -402,7 +515,9 @@
       evaluateAlarm();
     }catch(err){
       console.error('Error de red:', err);
-      showToast(`<b>⚠️ Fallo al cargar datos en tiempo real</b><div class="small muted">${String(err)}</div>`);
+      showToast(`<b>⚠️ Fallo al cargar datos en tiempo real</b><div class="small 
+
+muted">${String(err)}</div>`);
     }
   }
 
@@ -415,14 +530,26 @@
       const d = STATE.data[sym]; if(!d) continue;
       if(filter==='buy' && d.signal.dir!=='buy') continue;
       if(filter==='sell' && d.signal.dir!=='sell') continue;
-      const row = document.createElement('div'); row.className='row'; row.onclick=()=>{ STATE.focus=sym; renderDetail(sym); window.scrollTo({top:0,behavior:'smooth'}); };
+      const row = document.createElement('div'); row.className='row'; row.onclick=()
+
+=>{ STATE.focus=sym; renderDetail(sym); window.scrollTo({top:0,behavior:'smooth'}); 
+
+};
       row.innerHTML = `
         <div class="sym">${sym}</div>
         <div>
-          <div><b>${SYMBOLS[sym].name}</b> <span class="small muted mono">${d.pair}</span></div>
-          <div class="small muted">Señal: <span class="sig ${d.signal.dir}">${d.signal.type}</span> · Confianza <span class="mono">${d.signal.confidence}%</span></div>
+          <div><b>${SYMBOLS[sym].name}</b> <span class="small muted mono">
+
+${d.pair}</span></div>
+          <div class="small muted">Señal: <span class="sig ${d.signal.dir}">
+
+${d.signal.type}</span> · Confianza <span class="mono">
+
+${d.signal.confidence}%</span></div>
         </div>
-        <div class="chip mono">EMA12 ${d.ema12.at(-1).toFixed(2)} · EMA26 ${d.ema26.at(-1).toFixed(2)}</div>
+        <div class="chip mono">EMA12 ${last(d.ema12).toFixed(2)} · EMA26 ${last
+
+(d.ema26).toFixed(2)}</div>
       `;
       $list.appendChild(row);
     }
@@ -430,30 +557,52 @@
 
   function renderDetail(sym){
     const d = STATE.data[sym]; if(!d) return;
-    $title.innerHTML = `${sym} · ${SYMBOLS[sym].name} <span class="badge ${d.signal.dir}">${d.signal.type}</span>`;
+    $title.innerHTML = `${sym} · ${SYMBOLS[sym].name} <span class="badge 
+
+${d.signal.dir}">${d.signal.type}</span>`;
 
     if(d.signal.trendFlip){
       $bigAlert.style.display='flex';
       const dirTxt = d.signal.dir==='buy'? 'alcista' : 'bajista';
-      $bigAlert.innerHTML = `<span class="badge ${d.signal.dir} pulse">Flip</span> <b>Posible cambio de tendencia ${dirTxt}</b> · Señales: ${d.signal.reasons.slice(0,3).join(' · ')}`;
+      $bigAlert.innerHTML = `<span class="badge ${d.signal.dir} pulse">Flip</span> 
+
+<b>Posible cambio de tendencia ${dirTxt}</b> · Señales: ${d.signal.reasons.slice
+
+(0,3).join(' · ')}`;
     } else {
       $bigAlert.style.display='none';
     }
 
-    const close = d.series.c.at(-1);
-    const rsiNow = d.rsiArr.at(-1) || 50;
-    const atrNow = d.atrArr.at(-1) || 0;
-    const macdNow = (d.macdObj.macdLine.at(-1)||0) - (d.macdObj.signal.at(-1)||0);
+    const close = last(d.series.c);
+    const rsiNow = last(d.rsiArr) || 50;
+    const atrNow = last(d.atrArr) || 0;
+    const macdNow = (last(d.macdObj.macdLine)||0) - (last(d.macdObj.signal)||0);
     $kpis.innerHTML = `
-      <div class="kpi"><div class="lbl">Precio</div><div class="val mono">${close.toFixed(4)}</div></div>
-      <div class="kpi"><div class="lbl">RSI 14</div><div class="val mono" style="color:${rsiNow<30?'var(--bull)':rsiNow>70?'var(--bear)':'#e4ebff'}">${rsiNow.toFixed(1)}</div></div>
-      <div class="kpi"><div class="lbl">MACD hist</div><div class="val mono" style="color:${macdNow>=0?'var(--bull)':'var(--bear)'}">${macdNow.toFixed(5)}</div></div>
-      <div class="kpi"><div class="lbl">ATR</div><div class="val mono">${atrNow.toFixed(5)}</div></div>
+      <div class="kpi"><div class="lbl">Precio</div><div class="val mono">
+
+${close.toFixed(4)}</div></div>
+      <div class="kpi"><div class="lbl">RSI 14</div><div class="val mono" style="color:
+
+${rsiNow<30?'var(--bull)':rsiNow>70?'var(--bear)':'#e4ebff'}">${rsiNow.toFixed(1)}
+
+</div></div>
+      <div class="kpi"><div class="lbl">MACD hist</div><div class="val mono" 
+
+style="color:${macdNow>=0?'var(--bull)':'var(--bear)'}">${macdNow.toFixed(5)}
+
+</div></div>
+      <div class="kpi"><div class="lbl">ATR</div><div class="val mono">
+
+${atrNow.toFixed(5)}</div></div>
     `;
 
     drawCandles($chart, d.series, d.ema12, d.ema26);
-    drawLine($rsiChart, d.rsiArr.map(x=>x??50), {yMin:0, yMax:100, bands:[{y:30,color:'var(--bull)'},{y:70,color:'var(--bear)'}]});
-    const macdLine = d.macdObj.macdLine.map(x=>x??0), sigLine = d.macdObj.signal.map(x=>x??0);
+    drawLine($rsiChart, d.rsiArr.map(x=>x??50), {yMin:0, yMax:100, bands:
+
+[{y:30,color:'var(--bull)'},{y:70,color:'var(--bear)'}]});
+    const macdLine = d.macdObj.macdLine.map(x=>x??0), sigLine = 
+
+d.macdObj.signal.map(x=>x??0);
     drawLines($macdChart, [macdLine, sigLine], {legend:['MACD','Signal']});
   }
 
@@ -461,53 +610,95 @@
    * DIBUJO: CHARTING *
    *******************/
   function drawCandles(canvas, series, ema12, ema26){
-    const ctx = canvas.getContext('2d'); const W=canvas.clientWidth, H=canvas.clientHeight; canvas.width=W*2; canvas.height=H*2; ctx.scale(2,2);
+    const ctx = canvas.getContext('2d'); const W=canvas.clientWidth, 
+
+H=canvas.clientHeight; canvas.width=W*2; canvas.height=H*2; ctx.scale(2,2);
     ctx.clearRect(0,0,W,H);
-    const n = series.c.length; const padL=50, padR=10, padT=10, padB=20; const plotW=W-padL-padR, plotH=H-padT-padB;
-    const win = Math.min(180, n); const max = Math.max(...series.h.slice(-win)); const min=Math.min(...series.l.slice(-win));
+    const n = series.c.length; const padL=50, padR=10, padT=10, padB=20; const 
+
+plotW=W-padL-padR, plotH=H-padT-padB;
+    const win = Math.min(180, n); const max = Math.max(...series.h.slice(-win)); const 
+
+min=Math.min(...series.l.slice(-win));
     const xStep = plotW/win; const start = n-win; 
     const y = (v)=> padT + (max-v)*plotH/(max-min || 1);
 
     // grid
-    ctx.strokeStyle='rgba(255,255,255,.06)'; ctx.lineWidth=1; ctx.beginPath(); for(let i=0;i<=4;i++){ const yy = padT + (plotH*i/4); ctx.moveTo(padL, yy); ctx.lineTo(W-padR, yy);} ctx.stroke();
+    ctx.strokeStyle='rgba(255,255,255,.06)'; ctx.lineWidth=1; ctx.beginPath(); for(let 
+
+i=0;i<=4;i++){ const yy = padT + (plotH*i/4); ctx.moveTo(padL, yy); ctx.lineTo(W-padR, 
+
+yy);} ctx.stroke();
 
     // candles
     for(let i=0;i<win;i++){
-      const idx=start+i; const o=series.o[idx], h=series.h[idx], l=series.l[idx], c=series.c[idx];
+      const idx=start+i; const o=series.o[idx], h=series.h[idx], l=series.l[idx], c=series.c
+
+[idx];
       const x = padL + i*xStep + xStep*0.5; const bull = c>=o;
-      ctx.strokeStyle='rgba(255,255,255,.5)'; ctx.beginPath(); ctx.moveTo(x, y(l)); ctx.lineTo(x, y(h)); ctx.stroke();
-      const w = Math.max(1, xStep*0.55); const x0=x-w/2, y0=y(Math.max(o,c)), y1=y(Math.min(o,c));
+      ctx.strokeStyle='rgba(255,255,255,.5)'; ctx.beginPath(); ctx.moveTo(x, y(l)); 
+
+ctx.lineTo(x, y(h)); ctx.stroke();
+      const w = Math.max(1, xStep*0.55); const x0=x-w/2, y0=y(Math.max(o,c)), y1=y
+
+(Math.min(o,c));
       ctx.fillStyle = bull? 'rgba(0,255,136,.8)' : 'rgba(255,59,105,.8)';
       ctx.fillRect(x0, y0, w, Math.max(1, y1-y0));
     }
 
-    function pathLine(arr, color){ ctx.beginPath(); ctx.moveTo(padL, y(arr[start])); for(let i=1;i<win;i++){ ctx.lineTo(padL + i*xStep + xStep*0.5, y(arr[start+i])); } ctx.strokeStyle=color; ctx.lineWidth=1.6; ctx.stroke(); }
+    function pathLine(arr, color){ ctx.beginPath(); ctx.moveTo(padL, y(arr[start])); for
+
+(let i=1;i<win;i++){ ctx.lineTo(padL + i*xStep + xStep*0.5, y(arr[start+i])); } 
+
+ctx.strokeStyle=color; ctx.lineWidth=1.6; ctx.stroke(); }
     pathLine(ema12, 'rgba(0,255,136,.9)');
     pathLine(ema26, 'rgba(255,59,105,.9)');
 
     ctx.fillStyle='rgba(255,255,255,.6)'; ctx.font='12px Inter, sans-serif';
-    for(let i=0;i<=4;i++){ const vv = (min + (max-min)*(1-i/4)); const yy=padT + (plotH*i/4)+4; ctx.fillText(vv.toFixed(4), W-padR-56, yy); }
+    for(let i=0;i<=4;i++){ const vv = (min + (max-min)*(1-i/4)); const yy=padT + 
+
+(plotH*i/4)+4; ctx.fillText(vv.toFixed(4), W-padR-56, yy); }
   }
 
   function drawLine(canvas, arr, {yMin=null, yMax=null, bands=[]}={}){
-    const ctx=canvas.getContext('2d'); const W=canvas.clientWidth, H=canvas.clientHeight; canvas.width=W*2; canvas.height=H*2; ctx.scale(2,2);
+    const ctx=canvas.getContext('2d'); const W=canvas.clientWidth, 
+
+H=canvas.clientHeight; canvas.width=W*2; canvas.height=H*2; ctx.scale(2,2);
     ctx.clearRect(0,0,W,H);
-    const n=arr.length; const pad=12; const plotW=W-pad*2, plotH=H-pad*2; const win=Math.min(180,n); const start=n-win;
+    const n=arr.length; const pad=12; const plotW=W-pad*2, plotH=H-pad*2; const 
+
+win=Math.min(180,n); const start=n-win;
     const subset = arr.slice(start);
-    const max = yMax!=null? yMax : Math.max(...subset); const min = yMin!=null? yMin : Math.min(...subset);
-    const xStep = plotW/(subset.length-1 || 1); const y=(v)=> pad+(max-v)*plotH/(max-min || 1);
+    const max = yMax!=null? yMax : Math.max(...subset); const min = yMin!=null? yMin : 
 
-    bands.forEach(b=>{ ctx.setLineDash([4,4]); ctx.strokeStyle=b.color; ctx.beginPath(); ctx.moveTo(pad, y(b.y)); ctx.lineTo(W-pad, y(b.y)); ctx.stroke(); ctx.setLineDash([]);});
+Math.min(...subset);
+    const xStep = plotW/(subset.length-1 || 1); const y=(v)=> pad+(max-v)*plotH/(max-
 
-    ctx.beginPath(); ctx.moveTo(pad, y(subset[0])); for(let i=1;i<subset.length;i++){ ctx.lineTo(pad + i*xStep, y(subset[i])); }
+min || 1);
+
+    bands.forEach(b=>{ ctx.setLineDash([4,4]); ctx.strokeStyle=b.color; ctx.beginPath(); 
+
+ctx.moveTo(pad, y(b.y)); ctx.lineTo(W-pad, y(b.y)); ctx.stroke(); ctx.setLineDash
+
+([]);});
+
+    ctx.beginPath(); ctx.moveTo(pad, y(subset[0])); for(let i=1;i<subset.length;i++){ 
+
+ctx.lineTo(pad + i*xStep, y(subset[i])); }
     ctx.strokeStyle='rgba(223,230,255,.95)'; ctx.lineWidth=1.8; ctx.stroke();
   }
 
   function drawLines(canvas, seriesArr, {legend=[]}={}){
-    const ctx=canvas.getContext('2d'); const W=canvas.clientWidth, H=canvas.clientHeight; canvas.width=W*2; canvas.height=H*2; ctx.scale(2,2);
+    const ctx=canvas.getContext('2d'); const W=canvas.clientWidth, 
+
+H=canvas.clientHeight; canvas.width=W*2; canvas.height=H*2; ctx.scale(2,2);
     ctx.clearRect(0,0,W,H);
-    const pad=12; const plotW=W-pad*2, plotH=H-pad*2; const n=Math.max(...seriesArr.map(s=>s.length)); const win=Math.min(180,n); const start=n-win;
-    const max=Math.max(...seriesArr.map(a=>a.slice(start)).flat()); const min=Math.min(...seriesArr.map(a=>a.slice(start)).flat());
+    const pad=12; const plotW=W-pad*2, plotH=H-pad*2; const n=Math.max
+
+(...seriesArr.map(s=>s.length)); const win=Math.min(180,n); const start=n-win;
+    const max=Math.max(...seriesArr.map(a=>a.slice(start)).flat()); const 
+
+min=Math.min(...seriesArr.map(a=>a.slice(start)).flat());
     const y=(v)=> pad+(max-v)*plotH/(max-min || 1);
     const xStep = plotW/(win-1 || 1);
 
@@ -518,7 +709,9 @@
       ctx.strokeStyle=colors[idx%colors.length]; ctx.lineWidth=1.6; ctx.stroke();
     });
 
-    if(legend.length){ ctx.font='12px Inter, sans-serif'; ctx.fillStyle='rgba(255,255,255,.7)'; legend.forEach((t,i)=>{ ctx.fillText(t, pad+8 + i*80, pad+12); }); }
+    if(legend.length){ ctx.font='12px Inter, sans-serif'; ctx.fillStyle='rgba(255,255,255,.7)'; 
+
+legend.forEach((t,i)=>{ ctx.fillText(t, pad+8 + i*80, pad+12); }); }
   }
 
   /*******************
@@ -531,23 +724,37 @@
     return strong && confOK; // puedes añadir d.signal.trendFlip para hacerlo más estricto
   }
 
+  /* ======= 4) maybeNotify con permisos seguros ======= */
   async function maybeNotify(sym, d){
-    const now = Date.now(); const key = sym+'-'+STATE.tf+'-'+d.signal.type; const last = ALARM.lastNotice[key]||0;
-    if(now - last < 10*60*1000) return; // anti-spam 10 min
+    const now = Date.now(); const key = sym+'-'+STATE.tf+'-'+d.signal.type; const 
+
+lastNotice = ALARM.lastNotice[key]||0;
+    if(now - lastNotice < 10*60*1000) return; // anti-spam 10 min
     ALARM.lastNotice[key]=now;
 
     const verb = d.signal.type.includes('Buy')? 'COMPRA' : 'VENTA';
     const html = `<b>🔔 Oportunidad de ${verb} en ${sym}</b>
-      <div class="small">${SYMBOLS[sym].name} · ${d.signal.type} · Confianza ${d.signal.confidence}%</div>
+      <div class="small">${SYMBOLS[sym].name} · ${d.signal.type} · Confianza 
+
+${d.signal.confidence}%</div>
       <div class="small muted">Razones: ${d.signal.reasons.slice(0,3).join(' · ')}</div>`;
     showToast(html);
 
-    /* ===== ÚNICO CAMBIO DENTRO DE maybeNotify ===== */
     try{ playSirena(); }catch(_){/* ignore */}
-    /* ============================================== */
 
-    if('Notification' in window && Notification.permission==='granted') new Notification(`Oportunidad de ${verb} — ${sym}`, {body:`${d.signal.type} · Conf ${d.signal.confidence}%`, silent:true});
+    if('Notification' in window){
+      if(Notification.permission!=='granted'){
+        try{
+          const perm = await Notification.requestPermission();
+          if(perm!=='granted') return;
+        }catch(_){ return; }
+      }
+      new Notification(`Oportunidad de ${verb} — ${sym}`, {body:`${d.signal.type} · Conf 
+
+${d.signal.confidence}%`, silent:true});
+    }
   }
+  /* =================================================== */
 
   function evaluateAlarm(){
     if(!ALARM.enabled) return;
@@ -571,19 +778,25 @@
     ALARM.enabled = !ALARM.enabled;
     $alarmBtn.textContent = 'Alarma: ' + (ALARM.enabled? 'ON' : 'OFF');
     $alarmBtn.classList.toggle('on', ALARM.enabled);
-    if(ALARM.enabled && 'Notification' in window && Notification.permission!=='granted'){
+    if(ALARM.enabled && 'Notification' in window && Notification.permission!
+
+=='granted'){
       try{ await Notification.requestPermission(); }catch(_){/* ignore */}
     }
-    if(ALARM.enabled){ showToast('<b>🔔 Alarma activada</b><div class="small muted">Te avisaré cuando haya señales fuertes de compra o venta.</div>'); }
+    if(ALARM.enabled){ showToast('<b>🔔 Alarma activada</b><div class="small 
+
+muted">Te avisaré cuando haya señales fuertes de compra o venta.</div>'); }
   });
 
-  // Auto refresh cada 60s
-  setInterval(refreshAll, 60000);
+  /* ======= 3) Auto refresh sin solapamiento ======= */
+  async function autoRefresh(){
+    await refreshAll();
+    setTimeout(autoRefresh, 60000);
+  }
+  autoRefresh();
+  /* =============================================== */
 
-  // Init
-  (async()=>{ await refreshAll(); })();
-
+  // Init (primer refresco inmediato ya lo hace autoRefresh)
   </script>
 </body>
 </html>
-
